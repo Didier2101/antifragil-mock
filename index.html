@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origen Antifrágil | Plataforma de Consejería</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <!-- Auth Stage -->
+    <div id="loginStage" class="login-screen">
+        <div class="login-left">
+            <div class="brand-section">
+                <img src="assets/logo.png" alt="Origen Antifrágil" class="main-logo-img">
+            </div>
+            <h1 class="brand-hero-title">Fortalécete ante el <span style="color: #84b49c">caos</span>.</h1>
+            <p class="brand-mission-text">Consejería estratégica para MiPyMEs: Transformamos la incertidumbre en ventaja
+                competitiva mediante el pensamiento cristalizado de expertos senior.</p>
+        </div>
+        <div class="login-right">
+            <div class="login-box">
+                <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--color-primary);">
+                    Acceder</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2.5rem;">Bienvenido al núcleo de decisiones
+                    estratégicas.</p>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display:block; font-size:0.875rem; font-weight:700; margin-bottom:0.5rem;">Email
+                        Institucional</label>
+                    <input type="email" id="emailInput" class="input-field" placeholder="ejemplo@antifragil.com">
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <label
+                        style="display:block; font-size:0.875rem; font-weight:700; margin-bottom:0.5rem;">Contraseña</label>
+                    <input type="password" id="passInput" class="input-field" placeholder="••••••••">
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; height: 56px; font-size: 1rem;"
+                    onclick="processLogin()">Ingresar al Sistema</button>
+
+                <!-- Demo Helper -->
+                <div class="demo-credentials">
+                    <p>Credenciales Demo (Clic para usar):</p>
+                    <div class="creds-list">
+                        <span class="creds-item" onclick="autoFill('admin@antifragil.com')">● Admin:
+                            admin@antifragil.com</span>
+                        <span class="creds-item" onclick="autoFill('experto@antifragil.com')">● Experto:
+                            experto@antifragil.com</span>
+                        <span class="creds-item" onclick="autoFill('cliente@antifragil.com')">● Cliente:
+                            cliente@antifragil.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Stage -->
+    <div id="appStage" class="app-layout hidden">
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-toggle-edge" onclick="toggleSidebar()">
+                <i data-lucide="chevron-left" id="toggleIcon"></i>
+            </button>
+            <div class="sidebar-header">
+                <!-- Company name removed as requested -->
+            </div>
+            <nav class="nav-menu" id="navLinks">
+                <!-- Links injected by JS -->
+            </nav>
+            <div style="padding: 1.5rem; border-top: 1px solid var(--border-main);">
+                <div class="nav-btn" onclick="location.reload()">
+                    <i data-lucide="log-out"></i>
+                    <span class="label">Salir</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-view">
+            <header class="view-header">
+                <div>
+                    <h1 id="viewTitle"
+                        style="font-size: 2rem; font-weight: 800; letter-spacing: -1.5px; color: var(--color-primary);">
+                        Dashboard</h1>
+                    <p id="viewSubtitle" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;"></p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <div style="text-align: right;">
+                        <p id="profileName" style="font-weight: 800; color: var(--color-primary);"></p>
+                        <span id="roleBadge"
+                            style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);"></span>
+                    </div>
+                    <div
+                        style="width: 52px; height: 52px; background: var(--color-primary); border-radius: 14px; display:flex; align-items:center; justify-content:center; color:white;">
+                        <i data-lucide="user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="main-content-scroll">
+                <div id="dashboardContent" class="bento-grid animated-content">
+                    <!-- Dynamic Content -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Init Lucide on load and on any change
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
