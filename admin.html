@@ -39,7 +39,8 @@
                     <p id="viewSubtitle" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
                         Supervisión de la red y métricas globales.</p>
                 </div>
-                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 1.5rem; cursor: pointer;"
+                    onclick="toggleProfileModal()">
                     <div style="text-align: right;">
                         <p id="profileName" style="font-weight: 800; color: var(--color-primary);">Administrador Central
                         </p>
@@ -58,6 +59,7 @@
                 <div id="dashboardContent" class="bento-grid animated-content"></div>
             </div>
         </main>
+        <nav id="mobileNav" class="bottom-nav"></nav>
     </div>
 
     <script src="data.js"></script>

@@ -16,23 +16,77 @@ const currentUser = {
     ]
 };
 
-function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+function toggleSidebar() { 
+    const sidebar = document.getElementById('sidebar');
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+        sidebar.classList.toggle('mobile-open');
+    } else {
+        sidebar.classList.toggle('collapsed');
+    }
+}
+
+function toggleProfileModal() {
+    let modal = document.getElementById('profileModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'profileModal';
+        modal.className = 'profile-dropdown';
+        modal.innerHTML = `
+            <div class="profile-dropdown-header">
+                <b>${currentUser.name}</b>
+                <span>${currentUser.role}</span>
+            </div>
+            <div class="logout-btn" onclick="location.href='index.html'">
+                <i data-lucide="log-out"></i>
+                <span>Cerrar Sesión</span>
+            </div>
+        `;
+        document.querySelector('.view-header').appendChild(modal);
+        lucide.createIcons();
+    }
+    modal.classList.toggle('open');
+    const closeHandler = (e) => {
+        if (!modal.contains(e.target) && !e.target.closest('#profileImg') && !e.target.closest('#profileName')) {
+            modal.classList.remove('open');
+            document.removeEventListener('click', closeHandler);
+        }
+    };
+    setTimeout(() => document.addEventListener('click', closeHandler), 10);
+}
 
 function renderNavigation() {
     const nav = document.getElementById('navLinks');
-    nav.innerHTML = currentUser.nav.map(item => `
+    const mobileNav = document.getElementById('mobileNav');
+
+    const navHTML = currentUser.nav.map(item => `
         <div class="nav-btn" id="nav-${item.id}" onclick="navigateTo('${item.id}')">
             <i data-lucide="${item.icon}"></i>
             <span class="label">${item.label}</span>
         </div>
     `).join('');
+
+    const mobileHTML = currentUser.nav.map(item => `
+        <div class="bottom-nav-item" id="mobile-nav-${item.id}" onclick="navigateTo('${item.id}')">
+            <i data-lucide="${item.icon}"></i>
+            <span>${item.label.split(' ')[0]}</span>
+        </div>
+    `).join('');
+
+    if (nav) nav.innerHTML = navHTML;
+    if (mobileNav) mobileNav.innerHTML = mobileHTML;
     lucide.createIcons();
 }
 
 function navigateTo(viewId) {
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.nav-btn, .bottom-nav-item').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`nav-${viewId}`)?.classList.add('active');
+    document.getElementById(`mobile-nav-${viewId}`)?.classList.add('active');
+    
     const content = document.getElementById('dashboardContent');
+    if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+    }
     const viewTitleMap = {
         'dashboard': 'Mi Agenda',
         'radar': 'Radar de Oportunidades',
