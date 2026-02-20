@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Cliente | Origen Antifrágil</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div id="appStage" class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-toggle-edge" onclick="toggleSidebar()">
+                <i data-lucide="chevron-left" id="toggleIcon"></i>
+            </button>
+            <div class="sidebar-header">
+                <span class="brand-text">NEXO CLIENTE</span>
+            </div>
+            <nav class="nav-menu" id="navLinks"></nav>
+            <div style="padding: 1.5rem; border-top: 1px solid var(--border-main);">
+                <div class="nav-btn" onclick="location.href='index.html'">
+                    <i data-lucide="log-out"></i>
+                    <span class="label">Salir</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-view">
+            <header class="view-header">
+                <div>
+                    <h1 id="viewTitle" style="font-size: 2rem; font-weight: 800; color: var(--color-primary);">Panel
+                        Privado</h1>
+                    <p id="viewSubtitle" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Panel
+                        de consejería y toma de decisiones.</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <div style="text-align: right;">
+                        <p id="profileName" style="font-weight: 800; color: var(--color-primary);">CEO Innovate Corp</p>
+                        <span id="roleBadge"
+                            style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">CLIENTE
+                            PREMIUM</span>
+                    </div>
+                    <div id="profileImg"
+                        style="width: 52px; height: 52px; background: var(--color-primary); border-radius: 14px; overflow: hidden; display:flex; align-items:center; justify-content:center; color:white;">
+                        <i data-lucide="user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="main-content-scroll">
+                <div id="dashboardContent" class="bento-grid animated-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script_client.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

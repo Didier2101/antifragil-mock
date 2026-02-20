@@ -22,6 +22,7 @@ const usersData = {
         img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100',
         nav: [
             { id: 'dashboard', label: 'Mi Agenda', icon: 'calendar-days' },
+            { id: 'radar', label: 'Radar de Oportunidades', icon: 'radar' },
             { id: 'sessions', label: 'Sesiones NEXO', icon: 'messages-square' },
             { id: 'earnings', label: 'Mis Honorarios', icon: 'wallet' }
         ]
@@ -33,6 +34,7 @@ const usersData = {
         img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=100',
         nav: [
             { id: 'dashboard', label: 'Panel Privado', icon: 'activity' },
+            { id: 'challenges', label: 'Mis Desafíos', icon: 'zap' },
             { id: 'search', label: 'Directorio Senior', icon: 'search' },
             { id: 'booking', label: 'Agendar Sesión', icon: 'plus-circle' },
             { id: 'billing', label: 'Facturación', icon: 'credit-card' }
@@ -60,22 +62,16 @@ function processLogin() {
     const user = usersData[email];
 
     if (user) {
-        currentUser = { ...user, email };
-        document.getElementById('loginStage').classList.add('hidden');
-        document.getElementById('appStage').classList.remove('hidden');
-        document.getElementById('profileName').textContent = user.name;
-        document.getElementById('roleBadge').textContent = user.role;
-        document.getElementById('viewSubtitle').textContent = user.subtitle;
-        
-        const profileImgContainer = document.querySelector('.main-view header div:last-child div:last-child');
-        if (profileImgContainer) {
-            profileImgContainer.innerHTML = `<img src="${user.img}" style="width:100%; height:100%; border-radius:14px; object-fit:cover;">`;
-        }
-        
-        renderNavigation(user.nav);
-        navigateTo('dashboard');
+        if (email.includes('admin')) window.location.href = 'admin.html';
+        else if (email.includes('experto')) window.location.href = 'experto.html';
+        else if (email.includes('cliente')) window.location.href = 'cliente.html';
     } else {
-        alert('Credenciales inválidas.');
+        Swal.fire({
+            title: 'Error de Acceso',
+            text: 'Credenciales inválidas. Por favor, verifica tu email y contraseña.',
+            icon: 'error',
+            confirmButtonColor: '#293838'
+        });
     }
 }
 
@@ -246,6 +242,86 @@ function renderClientViews(viewId, content) {
                 </div>
             </div>
         `;
+    } else if (viewId === 'challenges') {
+        const challenges = liveData.challenges.filter(ch => ch.clientEmail === currentUser.email);
+        content.innerHTML = `
+            <div class="card span-4" style="background: linear-gradient(135deg, var(--color-primary) 0%, #1a2222 100%); color: white; border: none; margin-bottom: 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <p class="panel-label" style="color:var(--color-primary-light); opacity: 1; filter: brightness(2.5);">ESTRATEGIA CORPORATIVA</p>
+                        <h2 style="font-size: 2.5rem; margin-top: 0.5rem;">Laboratorio de Desafíos</h2>
+                        <p style="opacity: 0.8; margin-top: 1rem; max-width: 500px;">Transforma tus problemas operativos en oportunidades de mejora mediante el pensamiento senior.</p>
+                    </div>
+                    <button class="btn btn-primary" style="background:white; color:var(--color-primary); padding: 1rem 2rem;" onclick="showNewChallengeForm()">
+                        <i data-lucide="plus-circle"></i> Crear Nuevo Reto
+                    </button>
+                </div>
+            </div>
+
+            <div id="challengeFormContainer" class="card span-4 hidden" style="border: 2px solid var(--color-primary); position: relative; overflow: hidden;">
+                <div style="position: absolute; top:0; left:0; width:4px; height:100%; background: var(--color-primary);"></div>
+                <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--color-primary); margin-bottom: 0.5rem;">Cuéntanos tus desafíos:</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">¿Qué "Cisne Negro" quieres evitar hoy? Describe la situación y los expertos senior competirán por ayudarte.</p>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-top:1rem;">
+                    <div>
+                        <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem; color:var(--text-muted);">TÍTULO ESTRATÉGICO</label>
+                        <input type="text" id="chTopic" class="input-field" placeholder="Ej: Rediseño de Logística Antifrágil">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem; color:var(--text-muted);">ÁREA CRÍTICA</label>
+                        <select id="chTag" class="input-field">
+                            <option value="Ciberseguridad">🛡️ Ciberseguridad</option>
+                            <option value="IA">🤖 IA & Datos</option>
+                            <option value="Finanzas">💰 Finanzas</option>
+                            <option value="Procesos">⚙️ Procesos</option>
+                            <option value="Legal">⚖️ Legal</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="margin-top:1.5rem;">
+                    <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem; color:var(--text-muted);">CONTEXTO DEL DESAFÍO</label>
+                    <textarea id="chDesc" class="input-field" style="height:150px; resize:none;" placeholder="Describe aquí la problemática, el impacto actual y lo que esperas lograr con la asesoría..."></textarea>
+                </div>
+
+                <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1.5rem;">
+                    <button class="btn" style="background:#f1f5f9; color: var(--text-primary);" onclick="showNewChallengeForm()">Descartar Borrador</button>
+                    <button class="btn btn-primary" style="padding: 1rem 3rem;" onclick="publishChallenge()">Publicar en el Radar</button>
+                </div>
+            </div>
+
+            <div class="card span-4" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1.5rem;">Panel de Historial de Desafíos</h3>
+                <div class="info-list" style="margin-top: 0;">
+                    ${challenges.reverse().map(ch => `
+                        <div class="info-item" style="display:block; padding:2rem; border-radius: 20px; border: 1px solid var(--border-main); background: white; margin-bottom: 1rem;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                                <div style="display:flex; align-items:center; gap: 0.75rem;">
+                                    <span style="background: var(--bg-sidebar); padding: 6px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; color: var(--color-primary);">${ch.tags[0]}</span>
+                                    <h4 style="font-weight:800; font-size: 1.15rem; color:var(--color-primary);">${ch.topic}</h4>
+                                </div>
+                                <div style="display:flex; align-items:center; gap: 0.5rem;">
+                                    <span class="dot dot-success"></span>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--success);">ACTIVO EN RADAR</span>
+                                </div>
+                            </div>
+                            <p style="font-size:1rem; color:var(--text-muted); line-height: 1.6; margin-bottom:1.5rem;">${ch.description}</p>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid #f1f5f9; pt: 1rem; padding-top: 1rem;">
+                                <span style="font-size:0.85rem; color:var(--text-muted);">Escaneado por <b>3 expertos</b></span>
+                                <span style="font-size:0.85rem; color:var(--text-muted);">${ch.date}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                    ${challenges.length === 0 ? `
+                        <div style="text-align:center; padding:5rem; background:white; border-radius: 24px; border: 1px dashed var(--border-main);">
+                            <i data-lucide="zap-off" style="width:48px; height:48px; color: var(--border-main); margin-bottom: 1.5rem;"></i>
+                            <p style="color:var(--text-muted); font-size: 1.1rem;">Tu laboratorio de desafíos está vacío. <br> <span style="font-size: 0.9rem; opacity: 0.7;">Comienza publicando tu primera meta estratégica.</span></p>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
     }
 }
 
@@ -275,6 +351,34 @@ function confirmBooking() {
 
     DB.save(liveData);
     navigateTo('dashboard');
+}
+
+function showNewChallengeForm() {
+    document.getElementById('challengeFormContainer').classList.toggle('hidden');
+}
+
+function publishChallenge() {
+    const topic = document.getElementById('chTopic').value;
+    const tag = document.getElementById('chTag').value;
+    const desc = document.getElementById('chDesc').value;
+
+    if (!topic || !desc) return alert('Por favor completa todos los campos.');
+
+    const liveData = DB.get();
+    const newChallenge = {
+        id: 'ch_' + Date.now(),
+        clientEmail: currentUser.email,
+        clientName: currentUser.name,
+        topic,
+        description: desc,
+        status: 'Abierto',
+        date: new Date().toISOString().split('T')[0],
+        tags: [tag]
+    };
+
+    liveData.challenges.push(newChallenge);
+    DB.save(liveData);
+    navigateTo('challenges');
 }
 
 // --- RENDERS ADMIN ---
@@ -425,6 +529,38 @@ function renderExpertViews(viewId, content) {
                     <div class="info-item"><span>Abril 2026</span><b>$2,850</b></div>
                 </div>
             </div>
+        `;
+    } else if (viewId === 'radar') {
+        const challenges = liveData.challenges || [];
+        content.innerHTML = `
+            <div class="card span-4" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; border: none; overflow: hidden; position: relative;">
+                <div style="position: absolute; top: -20px; right: -20px; width: 150px; height: 150px; background: var(--color-primary); filter: blur(80px); opacity: 0.3;"></div>
+                <div style="position: relative; z-index: 1;">
+                    <p class="panel-label" style="color: var(--color-primary); opacity: 1; font-weight: 800;">IA MATCHING ENGINE</p>
+                    <h2 style="font-size: 2.5rem; margin-top: 0.5rem;">Radar de Oportunidades</h2>
+                    <p style="opacity: 0.7; max-width: 600px; margin-top: 1rem;">Hemos analizado tu perfil senior y encontramos desafíos que requieren tu experiencia específica. Toma el control del caos.</p>
+                </div>
+            </div>
+            ${challenges.map(ch => `
+                <div class="card span-2 challenge-card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                        <span style="background: var(--bg-main); color: var(--color-primary); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; border: 1px solid var(--border-main);">
+                            ${ch.tags ? ch.tags[0] : 'General'}
+                        </span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">${ch.date}</span>
+                    </div>
+                    <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--color-primary); margin-bottom: 1rem;">${ch.topic}</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 2rem; flex-grow: 1;">${ch.description}</p>
+                    <div style="border-top: 1px solid var(--border-main); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Cliente</p>
+                            <p style="font-weight: 700;">${ch.clientName}</p>
+                        </div>
+                        <button class="btn btn-primary" style="padding: 10px 20px;" onclick="alert('Propuesta enviada al cliente')">Postularse</button>
+                    </div>
+                </div>
+            `).join('')}
+            ${challenges.length === 0 ? '<div class="card span-4" style="text-align:center; padding: 4rem;"><p style="color:var(--text-muted)">No hay desafíos activos en este momento. Vuelve más tarde.</p></div>' : ''}
         `;
     }
 }
